@@ -1,15 +1,166 @@
-/* 根据文件类型显示不同材质 */
-.mc-card[data-file-type="litematic"] {
-    border-color: #4CAF50;
-    background-image: url('assets/textures/grass_side.png');
+/* 基础样式 */
+body {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.mc-card[data-file-type="schematic"] {
-    border-color: #2196F3;
-    background-image: url('assets/textures/stone.png');
+/* 头部样式 */
+header {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.mc-card[data-file-type="nbt"] {
-    border-color: #FF9800;
-    background-image: url('assets/textures/planks_oak.png');
+header nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+header button {
+    background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+header button:hover {
+    background: linear-gradient(135deg, #0072ff 0%, #00c6ff 100%);
+}
+
+/* 项目墙样式 */
+#projectWall {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.project-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.project-card img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.project-card h3 {
+    margin: 1rem 0 0.5rem;
+    font-size: 1.25rem;
+}
+
+.project-card p {
+    color: #ddd;
+    font-size: 0.9rem;
+}
+
+.project-card a {
+    color: #00c6ff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.project-card a:hover {
+    text-decoration: underline;
+}
+
+/* 上传表单样式 */
+.upload-form {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.upload-form h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    color: #00c6ff;
+}
+
+.upload-form .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.upload-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.upload-form .file-dropzone {
+    border: 2px dashed #00c6ff;
+    padding: 1.5rem;
+    text-align: center;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.upload-form .file-dropzone:hover {
+    background: rgba(0, 198, 255, 0.1);
+}
+
+.upload-form .file-dropzone p {
+    color: #00c6ff;
+}
+
+.upload-form input[type="text"] {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #00c6ff;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.upload-form button[type="submit"] {
+    background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s ease;
+}
+
+.upload-form button[type="submit"]:hover {
+    background: linear-gradient(135deg, #0072ff 0%, #00c6ff 100%);
+}
+
+/* 科技感背景 */
+iframe {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: 0.3;
 }
