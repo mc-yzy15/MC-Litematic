@@ -2,6 +2,7 @@ name: CDN Purge
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   purge:

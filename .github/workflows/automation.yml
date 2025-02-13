@@ -1,0 +1,24 @@
+name: Automation Tasks
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 每天午夜执行
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  automation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run automation script
+        run: |
+          echo "Running automation tasks..."
+          # 清理缓存
+          rm -rf .cache/*
+          # 刷新缓存
+          echo 3 > /proc/sys/vm/drop_caches
+          # 刷新索引
+          updatedb

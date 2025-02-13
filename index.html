@@ -73,10 +73,15 @@
                     this.isLoggedIn = true;
                     this.username = localStorage.getItem('username');
                 }
-                const response = await fetch('https://raw.githubusercontent.com/mc-yzy15/MC-Litematic-data/main/projects.json');
-                this.projects = await response.json();
+                await this.updateProjects();
+                // 每隔30秒自动更新项目列表
+                setInterval(this.updateProjects.bind(this), 30000);
             },
             methods: {
+                async updateProjects() {
+                    const response = await fetch('https://raw.githubusercontent.com/mc-yzy15/MC-Litematic-data/main/projects.json');
+                    this.projects = await response.json();
+                },
                 async login() {
                     // 登录逻辑
                 },
