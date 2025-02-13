@@ -9,4 +9,4 @@ jobs:
     steps:
       - name: Purge jsDelivr
         run: |
-          curl https://purge.jsdelivr.net/gh/YOUR_USER/minecraft-projection-data@main/
+          curl https://purge.jsdelivr.net/gh/mc-yzy15/MC-Litematic@main/
