@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>申请API Key - MC投影仓库</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/material-design-icons/3.0.1/iconfont/material-icons.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="api-key-container">
+        <form id="apiKeyForm" class="api-key-form">
+            <h2><i class="material-icons">vpn_key</i> 申请API Key</h2>
+            <button type="submit" class="download-btn">
+                <i class="material-icons">send</i> 申请API Key
+            </button>
+        </form>
+    </div>
+
+    <script src="https://unpkg.com/vue@3"></script>
+    <script>
+        class ApiKeyHandler {
+            constructor() {
+                this.form = document.getElementById('apiKeyForm');
+                this.initEventListeners();
+            }
+
+            initEventListeners() {
+                this.form.addEventListener('submit', this.handleSubmit.bind(this));
+            }
+
+            async handleSubmit(e) {
+                e.preventDefault();
+                
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('请先登录。');
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/api/apply-key', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        alert(`API Key申请成功: ${data.apiKey}`);
+                    } else {
+                        alert('API Key申请失败，请重试。');
+                    }
+                } catch (error) {
+                    console.error('API Key申请失败:', error);
+                }
+            }
+        }
+
+        new ApiKeyHandler();
+    </script>
+</body>
+</html>

@@ -5,27 +5,7 @@
     <title>MC投影仓库 - 自动化托管平台</title>
     <link href="https://cdn.bootcdn.net/ajax/libs/material-design-icons/3.0.1/iconfont/material-icons.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    <style>
-        body {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-        }
-        .upload-form {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .file-dropzone {
-            border: 2px dashed #ccc;
-            padding: 2rem;
-            text-align: center;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-    </style>
+    <link href="style.css" rel="stylesheet">
 </head>
 <body>
     <header class="bg-black bg-opacity-50 p-4">
@@ -53,8 +33,6 @@
         </div>
     </div>
 
-    <iframe src="https://example.com/tech-background" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.3;"></iframe>
-
     <script src="https://unpkg.com/vue@3"></script>
     <script>
         const app = Vue.createApp({
@@ -81,126 +59,24 @@
                     const response = await fetch('https://raw.githubusercontent.com/mc-yzy15/MC-Litematic-data/main/projects.json');
                     this.projects = await response.json();
                 },
-                async login() {
-                    // 登录逻辑
-                },
-                async register() {
-                    // 注册逻辑
-                },
                 logout() {
                     localStorage.removeItem('token');
                     localStorage.removeItem('username');
                     this.isLoggedIn = false;
                 },
-                async applyApiKey() {
-                    const response = await fetch('/api/apply-key', {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${localStorage.getItem('token')}`
-                        }
-                    });
-                    // 处理响应
+                applyApiKey() {
+                    window.location.href = '/apply-api.html';
                 }
             }
         }).mount('#projectWall');
-    </script>
 
-    <!-- 新增上传表单 -->
-    <form class="upload-form" id="uploadForm" enctype="multipart/form-data">
-        <h2><i class="material-icons">cloud_upload</i> 上传新投影</h2>
-        
-        <div class="form-grid">
-            <div>
-                <label>投影文件 (.litematic)</label>
-                <div class="file-dropzone" id="projectFileZone">
-                    <input type="file" id="projectFile" accept=".litematic" hidden>
-                    <p>点击选择或拖放文件</p>
-                </div>
-            </div>
-            
-            <div>
-                <label>预览截图</label>
-                <div class="file-dropzone" id="screenshotZone">
-                    <input type="file" id="screenshot" accept="image/*" hidden>
-                    <p>点击选择或拖放图片</p>
-                </div>
-            </div>
-        </div>
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            window.location.href = '/login.html';
+        });
 
-        <!-- 元数据输入 -->
-        <div class="form-group">
-            <label>投影名称</label>
-            <input type="text" id="projectName" required>
-        </div>
-        
-        <button type="submit" class="download-btn">
-            <i class="material-icons">send</i> 提交审核
-        </button>
-    </form>
-
-    <script>
-        // 增强版上传逻辑
-        class UploadHandler {
-            constructor() {
-                this.projectFile = null;
-                this.screenshot = null;
-                this.form = document.getElementById('uploadForm');
-                
-                this.initEventListeners();
-            }
-
-            initEventListeners() {
-                // 文件拖放处理
-                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                    document.addEventListener(eventName, this.preventDefaults);
-                });
-
-                // 投影文件处理
-                document.getElementById('projectFileZone').addEventListener('click', () => {
-                    document.getElementById('projectFile').click();
-                });
-                
-                // 截图处理
-                document.getElementById('screenshotZone').addEventListener('click', () => {
-                    document.getElementById('screenshot').click();
-                });
-
-                // 表单提交
-                this.form.addEventListener('submit', this.handleSubmit.bind(this));
-            }
-
-            async handleSubmit(e) {
-                e.preventDefault();
-                
-                const formData = new FormData();
-                formData.append('name', document.getElementById('projectName').value);
-                formData.append('projectFile', this.projectFile);
-                formData.append('screenshot', this.screenshot);
-                formData.append('version', '1.20.1'); // 可从表单获取
-                formData.append('author', '当前用户'); // 从登录信息获取
-
-                try {
-                    const response = await fetch('/.netlify/functions/upload', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    if (response.ok) {
-                        alert('提交成功，等待管理员审核！');
-                        this.form.reset();
-                    }
-                } catch (error) {
-                    console.error('上传失败:', error);
-                }
-            }
-
-            preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-        }
-
-        new UploadHandler();
+        document.getElementById('registerBtn').addEventListener('click', () => {
+            window.location.href = '/register.html';
+        });
     </script>
 </body>
 </html>

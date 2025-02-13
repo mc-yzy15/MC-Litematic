@@ -1,57 +1,57 @@
-    <div id="projectDetails">
-        <img :src="project.thumbnail" alt="预览图">
-        <h1>{{ project.name }}</h1>
-        <div class="metadata">
-            <p>版本: {{ project.version }}</p>
-            <p>作者: {{ project.author }}</p>
-            <p>上传日期: {{ project.uploadDate }}</p>
-            <p>文件类型: {{ project.fileType }}</p>
-            <p>下载次数: {{ project.downloadCount }}</p>
-        </div>
-        <a :href="project.downloadUrl" class="download-btn">下载</a>
-        <button v-if="isAdmin" @click="deleteProject">删除项目</button>
+<div id="projectDetails">
+    <img :src="project.thumbnail" alt="预览图">
+    <h1>{{ project.name }}</h1>
+    <div class="metadata">
+        <p>版本: {{ project.version }}</p>
+        <p>作者: {{ project.author }}</p>
+        <p>上传日期: {{ project.uploadDate }}</p>
+        <p>文件类型: {{ project.fileType }}</p>
+        <p>下载次数: {{ project.downloadCount }}</p>
     </div>
+    <a :href="project.downloadUrl" class="download-btn">下载</a>
+    <button v-if="isAdmin" @click="deleteProject">删除项目</button>
+</div>
 
-    <script>
-        const app = Vue.createApp({
-            data() {
-                return {
-                    project: {},
-                    isAdmin: false
-                }
+<script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                project: {},
+                isAdmin: false
+            }
+        },
+        async mounted() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                const response = await fetch('/api/check-admin', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                this.isAdmin = await response.json();
+            }
+            await this.updateProjectDetails();
+            // 每隔30秒自动更新项目详情
+            setInterval(this.updateProjectDetails.bind(this), 30000);
+        },
+        methods: {
+            async updateProjectDetails() {
+                const params = new URLSearchParams(window.location.search);
+                const projectId = params.get('id');
+                const response = await fetch(`https://raw.githubusercontent.com/mc-yzy15/MC-Litematic-data/main/projects/${projectId}.json`);
+                this.project = await response.json();
             },
-            async mounted() {
-                const token = localStorage.getItem('token');
-                if (token) {
-                    const response = await fetch('/api/check-admin', {
+            async deleteProject() {
+                if (confirm('确定要删除该项目吗？')) {
+                    await fetch(`/api/delete-project/${this.project.id}`, {
+                        method: 'DELETE',
                         headers: {
-                            'Authorization': `Bearer ${token}`
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
                         }
                     });
-                    this.isAdmin = await response.json();
-                }
-                await this.updateProjectDetails();
-                // 每隔30秒自动更新项目详情
-                setInterval(this.updateProjectDetails.bind(this), 30000);
-            },
-            methods: {
-                async updateProjectDetails() {
-                    const params = new URLSearchParams(window.location.search);
-                    const projectId = params.get('id');
-                    const response = await fetch(`https://raw.githubusercontent.com/mc-yzy15/MC-Litematic-data/main/projects/${projectId}.json`);
-                    this.project = await response.json();
-                },
-                async deleteProject() {
-                    if (confirm('确定要删除该项目吗？')) {
-                        await fetch(`/api/delete-project/${this.project.id}`, {
-                            method: 'DELETE',
-                            headers: {
-                                'Authorization': `Bearer ${localStorage.getItem('token')}`
-                            }
-                        });
-                        window.location.href = '/';
-                    }
+                    window.location.href = '/';
                 }
             }
-        }).mount('#projectDetails');
-    </script>
+        }
+    }).mount('#projectDetails');
+</script>

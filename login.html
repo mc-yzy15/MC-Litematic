@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>登录 - MC投影仓库</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/material-design-icons/3.0.1/iconfont/material-icons.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="login-container">
+        <form id="loginForm" class="login-form">
+            <h2><i class="material-icons">lock</i> 登录</h2>
+            <div class="form-group">
+                <label>用户名</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="form-group">
+                <label>密码</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit" class="download-btn">
+                <i class="material-icons">send</i> 登录
+            </button>
+        </form>
+    </div>
+
+    <script src="https://unpkg.com/vue@3"></script>
+    <script>
+        class LoginHandler {
+            constructor() {
+                this.form = document.getElementById('loginForm');
+                this.initEventListeners();
+            }
+
+            initEventListeners() {
+                this.form.addEventListener('submit', this.handleSubmit.bind(this));
+            }
+
+            async handleSubmit(e) {
+                e.preventDefault();
+                
+                const formData = new FormData();
+                formData.append('username', document.getElementById('username').value);
+                formData.append('password', document.getElementById('password').value);
+
+                try {
+                    const response = await fetch('/api/login', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        localStorage.setItem('token', data.token);
+                        localStorage.setItem('username', data.username);
+                        alert('登录成功！');
+                        window.location.href = '/';
+                    } else {
+                        alert('登录失败，请检查用户名和密码。');
+                    }
+                } catch (error) {
+                    console.error('登录失败:', error);
+                }
+            }
+        }
+
+        new LoginHandler();
+    </script>
+</body>
+</html>
