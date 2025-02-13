@@ -1,6 +1,10 @@
 class MCParticles {
     constructor() {
         this.canvas = document.createElement('canvas');
+        this.canvas.style.position = 'fixed';
+        this.canvas.style.top = '0';
+        this.canvas.style.left = '0';
+        this.canvas.style.zIndex = '-1';
         this.ctx = this.canvas.getContext('2d');
         document.body.prepend(this.canvas);
         
@@ -13,7 +17,14 @@ class MCParticles {
             color: `hsl(${Math.random()*360}, 50%, 50%)`
         }));
 
+        window.addEventListener('resize', () => this.resizeCanvas());
+        this.resizeCanvas();
         this.animate();
+    }
+
+    resizeCanvas() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
     }
 
     animate() {
