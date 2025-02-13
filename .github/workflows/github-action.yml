@@ -10,4 +10,4 @@ jobs:
     steps:
       - name: Purge jsDelivr
         run: |
-          curl https://purge.jsdelivr.net/gh/mc-yzy15/MC-Litematic@main/
+          curl https://purge.jsdelivr.net/gh/mc-yzy15/MC-Litematic@master/
