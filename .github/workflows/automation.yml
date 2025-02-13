@@ -18,7 +18,5 @@ jobs:
           echo "Running automation tasks..."
           # 清理缓存
           rm -rf .cache/*
-          # 刷新缓存
-          echo 3 > /proc/sys/vm/drop_caches
           # 刷新索引
           updatedb
