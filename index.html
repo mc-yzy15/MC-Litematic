@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>MC投影仓库 - 自动化托管平台</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/material-design-icons/3.0.1/iconfont/material-icons.min.css" rel="stylesheet>
+    <style>
+        /* 在前次样式基础上新增上传表单样式 */
+        .upload-form {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .file-dropzone {
+            border: 2px dashed #ccc;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">首页</a>
+            <div id="authSection">
+                <button id="loginBtn">登录</button>
+                <button id="registerBtn">注册</button>
+            </div>
+        </nav>
+    </header>
+
+    <div id="projectWall">
+        <!-- 动态加载投影卡片 -->
+        <div class="project-card" v-for="project in projects" :key="project.id">
+            <img :src="project.thumbnail" alt="预览图">
+            <h3>{{ project.name }}</h3>
+            <p>{{ project.description }}</p>
+            <a :href="`/preview.html?id=${project.id}`">查看详情</a>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@3"></script>
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    projects: []
+                }
+            },
+            async mounted() {
+                const response = await fetch('/projects.json');
+                this.projects = await response.json();
+            }
+        }).mount('#projectWall');
+    </script>
+
+    <!-- 新增上传表单 -->
+    <form class="upload-form" id="uploadForm" enctype="multipart/form-data">
+        <h2><i class="material-icons">cloud_upload</i> 上传新投影</h2>
+        
+        <div class="form-grid">
+            <div>
+                <label>投影文件 (.litematic)</label>
+                <div class="file-dropzone" id="projectFileZone">
+                    <input type="file" id="projectFile" accept=".litematic" hidden>
+                    <p>点击选择或拖放文件</p>
+                </div>
+            </div>
+            
+            <div>
+                <label>预览截图</label>
+                <div class="file-dropzone" id="screenshotZone">
+                    <input type="file" id="screenshot" accept="image/*" hidden>
+                    <p>点击选择或拖放图片</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 元数据输入 -->
+        <div class="form-group">
+            <label>投影名称</label>
+            <input type="text" id="projectName" required>
+        </div>
+        
+        <button type="submit" class="download-btn">
+            <i class="material-icons">send</i> 提交审核
+        </button>
+    </form>
+
+    <script>
+        // 增强版上传逻辑
+        class UploadHandler {
+            constructor() {
+                this.projectFile = null;
+                this.screenshot = null;
+                this.form = document.getElementById('uploadForm');
+                
+                this.initEventListeners();
+            }
+
+            initEventListeners() {
+                // 文件拖放处理
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    document.addEventListener(eventName, this.preventDefaults);
+                });
+
+                // 投影文件处理
+                document.getElementById('projectFileZone').addEventListener('click', () => {
+                    document.getElementById('projectFile').click();
+                });
+                
+                // 截图处理
+                document.getElementById('screenshotZone').addEventListener('click', () => {
+                    document.getElementById('screenshot').click();
+                });
+
+                // 表单提交
+                this.form.addEventListener('submit', this.handleSubmit.bind(this));
+            }
+
+            async handleSubmit(e) {
+                e.preventDefault();
+                
+                const formData = new FormData();
+                formData.append('name', document.getElementById('projectName').value);
+                formData.append('projectFile', this.projectFile);
+                formData.append('screenshot', this.screenshot);
+                formData.append('version', '1.20.1'); // 可从表单获取
+                formData.append('author', '当前用户'); // 从登录信息获取
+
+                try {
+                    const response = await fetch('/.netlify/functions/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (response.ok) {
+                        alert('提交成功，等待管理员审核！');
+                        this.form.reset();
+                    }
+                } catch (error) {
+                    console.error('上传失败:', error);
+                }
+            }
+
+            preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }
+
+        new UploadHandler();
+    </script>
+</body>
+</html>

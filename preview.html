@@ -1,0 +1,28 @@
+    <div id="projectDetails">
+        <img :src="project.thumbnail" alt="预览图">
+        <h1>{{ project.name }}</h1>
+        <div class="metadata">
+            <p>版本: {{ project.version }}</p>
+            <p>作者: {{ project.author }}</p>
+            <p>上传日期: {{ project.uploadDate }}</p>
+            <p>文件类型: {{ project.fileType }}</p>
+        </div>
+        <a :href="project.downloadUrl" class="download-btn">下载</a>
+    </div>
+
+    <script src="https://unpkg.com/vue@3"></script>
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    project: {}
+                }
+            },
+            async mounted() {
+                const params = new URLSearchParams(window.location.search);
+                const projectId = params.get('id');
+                const response = await fetch(`/projects/${projectId}.json`);
+                this.project = await response.json();
+            }
+        }).mount('#projectDetails');
+    </script>

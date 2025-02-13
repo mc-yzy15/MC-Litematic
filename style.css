@@ -1,0 +1,15 @@
+/* 根据文件类型显示不同材质 */
+.mc-card[data-file-type="litematic"] {
+    border-color: #4CAF50;
+    background-image: url('assets/textures/grass_side.png');
+}
+
+.mc-card[data-file-type="schematic"] {
+    border-color: #2196F3;
+    background-image: url('assets/textures/stone.png');
+}
+
+.mc-card[data-file-type="nbt"] {
+    border-color: #FF9800;
+    background-image: url('assets/textures/planks_oak.png');
+}

@@ -1,0 +1,12 @@
+name: CDN Purge
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  purge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Purge jsDelivr
+        run: |
+          curl https://purge.jsdelivr.net/gh/YOUR_USER/minecraft-projection-data@main/

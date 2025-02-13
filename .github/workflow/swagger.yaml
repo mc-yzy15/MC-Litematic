@@ -1,0 +1,12 @@
+openapi: 3.0.0
+info:
+  title: MC投影API
+  version: 1.0.0
+
+paths:
+  /api/projects:
+    get:
+      summary: 获取所有投影
+      responses:
+        '200':
+          description: 成功获取项目列表
